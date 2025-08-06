@@ -1,6 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { cn } from "../../../lib/utils";
 import LeftDecoration from "./LeftDecoration";
 
 const ProductCard = ({ product }) => {
@@ -100,9 +97,11 @@ const ProductCard = ({ product }) => {
         <td className="py-2 px-3 text-sm font-medium text-white bg-red-500/90">
           {spec.label}
         </td>
-        <td className={`py-2 px-3 text-sm text-gray-700 ${
-          index % 2 === 0 ? 'bg-white/80' : 'bg-red-50/60'
-        }`}>
+        <td
+          className={`py-2 px-3 text-sm text-gray-700 ${
+            index % 2 === 0 ? "bg-white/80" : "bg-red-50/60"
+          }`}
+        >
           {spec.value}
         </td>
       </tr>
@@ -148,7 +147,7 @@ const ProductCard = ({ product }) => {
 
             {/* 规格表格 */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">产品规格</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Specs</h3>
               <div className="overflow-hidden rounded-lg border border-gray-200">
                 <table className="w-full">
                   <tbody>{renderSpecificationTable()}</tbody>
