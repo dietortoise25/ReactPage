@@ -4,7 +4,7 @@ import ProductCard from "./components/ProductCard";
 import { cn } from "../../lib/utils";
 // Styles moved inline to avoid import issues
 
-function V0Page() {
+function HomePage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -12,22 +12,20 @@ function V0Page() {
     const fetchProducts = async () => {
       try {
         const response = await fetch("/product_specifications_simplified.json");
-        console.log("response", response);
 
         const data = await response.json();
         setProducts(data.products || []);
       } catch (error) {
-        console.error("Error fetching products:", error);
         setProducts([]);
+        console.error("Error fetching products:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-    console.log("useEffect");
   }, []);
-  console.log("products", products);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50 flex items-center justify-center relative overflow-hidden">
@@ -111,4 +109,4 @@ function V0Page() {
   );
 }
 
-export default V0Page;
+export default HomePage;
