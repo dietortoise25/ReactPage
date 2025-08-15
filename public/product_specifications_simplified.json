@@ -21,7 +21,7 @@
         "normal_using_time": "3-6 days"
       },
       "appearance": {
-        "colour": "Gold, Silver"
+        "color": "Gold, Silver"
       },
       "software": {
         "app": "GloryFit"
@@ -29,7 +29,7 @@
     },
     {
       "model": "DM56",
-      "white_background_image": "noimage.png",
+      "white_background_image": "DM56.png",
       "hardware_specifications": {
         "chipset": "ATS3085L",
         "heart_rate_sensor": "HR SpO2",
@@ -47,7 +47,7 @@
         "normal_using_time": "N/A"
       },
       "appearance": {
-        "colour": "Black, Silver, Gold"
+        "color": "Black, Silver, Gold"
       },
       "software": {
         "app": "Gloryfitpro"
@@ -73,7 +73,7 @@
         "normal_using_time": "4-7 days"
       },
       "appearance": {
-        "colour": "N/A"
+        "color": "N/A"
       },
       "software": {
         "app": "GloryFit"
@@ -84,26 +84,26 @@
       "white_background_image": "LC602金色.jpg",
       "additional_images": ["LC602银色.jpg"],
       "hardware_specifications": {
-        "chipset": "N/A",
-        "heart_rate_sensor": "N/A",
-        "screen": "N/A",
-        "screen_resolution": "N/A",
-        "battery_capacity": "N/A",
-        "waterproof_level": "N/A"
+        "chipset": "",
+        "heart_rate_sensor": "",
+        "screen": "1.19'' AMOLED",
+        "screen_resolution": "390×390",
+        "battery_capacity": "200mAh",
+        "waterproof_level": "IP68"
       },
       "connectivity_features": {
-        "bluetooth_call": "N/A",
-        "bluetooth_version": "N/A"
+        "bluetooth_call": "Yes",
+        "bluetooth_version": "BLE5.3"
       },
       "usage_time": {
-        "charging_time": "N/A",
-        "normal_using_time": "N/A"
+        "charging_time": "3-6 hours",
+        "normal_using_time": "3-6 days"
       },
       "appearance": {
-        "colour": "Gold, Silver"
+        "color": "Gold, Silver"
       },
       "software": {
-        "app": "N/A"
+        "app": "GloryFit"
       }
     },
     {
@@ -126,7 +126,7 @@
         "normal_using_time": "4-7 days"
       },
       "appearance": {
-        "colour": "N/A"
+        "color": "N/A"
       },
       "software": {
         "app": "Glory Fit"
@@ -152,7 +152,7 @@
         "normal_using_time": "3-5 days"
       },
       "appearance": {
-        "colour": "Black, Pink, Blue"
+        "color": "Black, Pink, Blue"
       },
       "software": {
         "app": "JYouPro"
@@ -178,7 +178,7 @@
         "normal_using_time": "20 Days"
       },
       "appearance": {
-        "colour": "Dark Gray, Silver"
+        "color": "Dark Gray, Silver"
       },
       "software": {
         "app": "GloryFitPro"
@@ -204,7 +204,7 @@
         "normal_using_time": "3-7 days"
       },
       "appearance": {
-        "colour": "N/A"
+        "color": "N/A"
       },
       "software": {
         "app": "oraimo Health"
@@ -230,10 +230,36 @@
         "normal_using_time": "3-7 days"
       },
       "appearance": {
-        "colour": "N/A"
+        "color": "N/A"
       },
       "software": {
         "app": "Glory Fit"
+      }
+    },
+    {
+      "model": "T7",
+      "white_background_image": "T7.jpg",
+      "hardware_specifications": {
+        "chipset": "ZB5691F",
+        "heart_rate_sensor": "LC09A",
+        "screen": "1.83'' TFT",
+        "screen_resolution": "240×284",
+        "battery_capacity": "230mAh",
+        "waterproof_level": "IP67"
+      },
+      "connectivity_features": {
+        "bluetooth_call": "Yes",
+        "bluetooth_version": "BLE5.3"
+      },
+      "usage_time": {
+        "charging_time": "Magnetic charging",
+        "normal_using_time": "3-5 days (regular use), 7-10 days (mild use)"
+      },
+      "appearance": {
+        "color": "Black, Pink, Blue"
+      },
+      "software": {
+        "app": "GloryFit"
       }
     }
   ]
