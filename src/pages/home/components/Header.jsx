@@ -1,6 +1,13 @@
 import { cn } from '../../../lib/utils'
+import { Mail } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  const handleMailClick = () => {
+    navigate('/business-card');
+  };
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-red-50 via-white to-red-25 overflow-hidden">
       {/* Glassmorphism background */}
@@ -11,6 +18,16 @@ const Header = () => {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-red-400/20 to-red-500/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute top-3/4 right-1/4 w-80 h-80 bg-gradient-to-r from-red-300/15 to-red-400/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-red-200/10 to-red-300/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+      </div>
+      
+      {/* Mail icon in top right corner */}
+      <div className="absolute top-6 right-6 z-20">
+        <button 
+          onClick={handleMailClick}
+          className="p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl group"
+        >
+          <Mail className="w-6 h-6 text-red-700 group-hover:text-red-800 transition-colors" />
+        </button>
       </div>
       
       <div className="relative z-10 container mx-auto px-6 py-20 lg:py-32">
