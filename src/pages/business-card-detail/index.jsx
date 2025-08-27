@@ -12,12 +12,50 @@ import {
   Share2,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
+import ShareModal from "../../components/ShareModal";
+
+// Contact Item Component for consistent formatting
+const ContactItem = ({
+  href,
+  icon: Icon,
+  value,
+  isExternal = false,
+}) => {
+  const Component = href ? "a" : "div";
+  const props = href
+    ? {
+        href,
+        ...(isExternal && { target: "_blank", rel: "noopener noreferrer" }),
+      }
+    : {};
+
+  return (
+    <Component
+      {...props}
+      className={`flex items-center space-x-3 p-3 bg-white/50 rounded-xl border border-white/50 ${
+        href ? "hover:bg-white/70 transition-all duration-300 group" : ""
+      }`}
+    >
+      <div
+        className={`p-2 bg-red-100 rounded-full ${
+          href ? "group-hover:bg-red-200 transition-colors" : ""
+        }`}
+      >
+        <Icon className="w-4 h-4 text-red-600" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-slate-700 text-sm md:text-base lg:text-lg truncate font-medium">{value}</p>
+      </div>
+    </Component>
+  );
+};
 
 function BusinessCardDetailPage() {
   const { path } = useParams();
   const navigate = useNavigate();
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     const fetchCard = async () => {
@@ -41,22 +79,8 @@ function BusinessCardDetailPage() {
     navigate("/business-card");
   };
 
-  const handleShare = async () => {
-    if (navigator.share && card) {
-      try {
-        await navigator.share({
-          title: `${card.name} - ${card.title}`,
-          text: `查看${card.name}的个人名片`,
-          url: window.location.href,
-        });
-      } catch (error) {
-        console.log("分享失败:", error);
-      }
-    } else {
-      // 复制链接到剪贴板
-      navigator.clipboard.writeText(window.location.href);
-      alert("链接已复制到剪贴板");
-    }
+  const handleShare = () => {
+    setShowShareModal(true);
   };
 
   if (loading) {
@@ -66,7 +90,7 @@ function BusinessCardDetailPage() {
           <div className="w-12 h-12 mx-auto">
             <div className="animate-spin rounded-full h-12 w-12 border-2 border-red-300 border-t-red-600"></div>
           </div>
-          <p className="text-red-700 font-medium">加载中...</p>
+          <p className="text-red-700 font-medium">Loading...</p>
         </div>
       </div>
     );
@@ -76,13 +100,17 @@ function BusinessCardDetailPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50 flex items-center justify-center">
         <div className="text-center space-y-4 p-6">
-          <h2 className="text-2xl font-bold text-red-900">名片未找到</h2>
-          <p className="text-red-700">抱歉，找不到该名片信息</p>
+          <h2 className="text-2xl font-bold text-red-900">
+            Business Card Not Found
+          </h2>
+          <p className="text-red-700">
+            Sorry, the business card information could not be found
+          </p>
           <button
             onClick={handleBackClick}
             className="px-6 py-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
           >
-            返回名片列表
+            Back to Business Cards
           </button>
         </div>
       </div>
@@ -105,7 +133,7 @@ function BusinessCardDetailPage() {
   } = card;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
+    <div className="h-screen bg-gradient-to-br from-red-50 via-white to-red-50 flex flex-col overflow-hidden">
       {/* Background decorative elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-red-200/20 to-red-300/20 rounded-full blur-3xl"></div>
@@ -113,12 +141,12 @@ function BusinessCardDetailPage() {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 p-4 flex items-center justify-between">
+      <header className="relative z-10 p-4 flex items-center justify-between landscape:p-2">
         <button
           onClick={handleBackClick}
-          className="p-3 rounded-full bg-white/80 backdrop-blur-md border border-white/50 hover:bg-white/90 transition-all duration-300 shadow-lg"
+          className="p-3 rounded-full bg-white/80 backdrop-blur-md border border-white/50 hover:bg-white/90 transition-all duration-300 shadow-lg landscape:p-2"
         >
-          <ArrowLeft className="w-5 h-5 text-red-700" />
+          <ArrowLeft className="w-5 h-5 text-red-700 landscape:w-4 landscape:h-4" />
         </button>
 
         {/* Company Logo */}
@@ -126,217 +154,289 @@ function BusinessCardDetailPage() {
           <img
             src="/logo.svg"
             alt="Company Logo"
-            className="h-8 w-auto"
+            className="h-8 w-auto landscape:h-6"
           />
           <span className="text-red-800 font-semibold text-sm hidden sm:inline"></span>
         </div>
 
         <button
           onClick={handleShare}
-          className="p-3 rounded-full bg-white/80 backdrop-blur-md border border-white/50 hover:bg-white/90 transition-all duration-300 shadow-lg"
+          className="p-3 rounded-full bg-white/80 backdrop-blur-md border border-white/50 hover:bg-white/90 transition-all duration-300 shadow-lg landscape:p-2"
         >
-          <Share2 className="w-5 h-5 text-red-700" />
+          <Share2 className="w-5 h-5 text-red-700 landscape:w-4 landscape:h-4" />
         </button>
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 px-4 pb-8">
-        <div className="max-w-md mx-auto">
-          {/* Profile Card */}
-          <div className="bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl overflow-hidden mb-6">
-            {/* Profile Header */}
-            <div className="relative p-8 text-center">
-              {/* Background pattern */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 via-transparent to-red-100/30"></div>
+      <main className="relative z-10 flex-1 overflow-hidden">
+        <div className="h-full px-2 py-2 landscape:px-2 landscape:py-0.5">
+          {/* Portrait Layout */}
+          <div className="max-w-md mx-auto h-full flex flex-col justify-between landscape:hidden">
+            {/* Profile Card */}
+            <div className="bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl rounded-2xl border border-white/50 shadow-xl overflow-hidden mb-2">
+              {/* Profile Header */}
+              <div className="relative p-4 text-center">
+                {/* Background pattern */}
+                <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 via-transparent to-red-100/30"></div>
 
-              <div className="relative space-y-4">
-                {/* Avatar */}
-                {avatar ? (
-                  <div className="relative mx-auto w-32 h-32 rounded-full overflow-hidden ring-4 ring-white/70 shadow-xl">
-                    <img
-                      src={avatar}
-                      alt={name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                        e.target.nextSibling.style.display = "flex";
-                      }}
-                    />
-                    <div
-                      className="absolute inset-0 bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-4xl font-bold"
-                      style={{ display: "none" }}
-                    >
+                <div className="relative space-y-2">
+                  {/* Avatar */}
+                  {avatar ? (
+                    <div className="relative mx-auto w-16 h-16 rounded-full overflow-hidden ring-2 ring-white/70 shadow-lg">
+                      <img
+                        src={avatar}
+                        alt={name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          e.target.nextSibling.style.display = "flex";
+                        }}
+                      />
+                      <div
+                        className="absolute inset-0 bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-lg font-bold"
+                        style={{ display: "none" }}
+                      >
+                        {name?.charAt(0)?.toUpperCase()}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-lg font-bold ring-2 ring-white/70 shadow-lg">
                       {name?.charAt(0)?.toUpperCase()}
                     </div>
-                  </div>
-                ) : (
-                  <div className="mx-auto w-32 h-32 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-4xl font-bold ring-4 ring-white/70 shadow-xl">
-                    {name?.charAt(0)?.toUpperCase()}
-                  </div>
-                )}
+                  )}
 
-                {/* Basic Info */}
+                  {/* Basic Info */}
+                  <div className="space-y-1">
+                    <h1 className="text-xl font-bold text-red-900 tracking-tight">
+                      {name}
+                    </h1>
+                    <p className="text-sm text-red-700 font-medium">{title}</p>
+                    <p className="text-xs text-red-600">{company}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              {description && (
+                <div className="px-4 pb-3">
+                  <div className="bg-red-50/50 rounded-xl p-2 border border-red-100/50">
+                    <p className="text-slate-700 text-xs text-center leading-tight">
+                      {description}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Main Content Grid */}
+            <div className="flex-1 grid grid-cols-1 gap-2">
+              {/* Contact Information */}
+              <div className="bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl rounded-2xl border border-white/50 shadow-xl p-4">
                 <div className="space-y-2">
-                  <h1 className="text-3xl font-bold text-red-900 tracking-tight">
-                    {name}
-                  </h1>
-                  <p className="text-xl text-red-700 font-medium">{title}</p>
-                  <p className="text-red-600">{company}</p>
+                  {email && (
+                    <ContactItem
+                      href={`mailto:${email}`}
+                      icon={Mail}
+                      value={email}
+                    />
+                  )}
+
+                  {phone && (
+                    <ContactItem
+                      href={`tel:${phone}`}
+                      icon={Phone}
+                      value={phone}
+                    />
+                  )}
+
+                  {location && (
+                    <ContactItem
+                      icon={MapPin}
+                      value={location}
+                    />
+                  )}
+
+                  {website && (
+                    <ContactItem
+                      href={website}
+                      icon={Globe}
+                      value={website}
+                      isExternal={true}
+                    />
+                  )}
+
+                  {linkedin && (
+                    <ContactItem
+                      href={linkedin}
+                      icon={Linkedin}
+                      value={linkedin}
+                      isExternal={true}
+                    />
+                  )}
+
+                  {github && (
+                    <ContactItem
+                      href={github}
+                      icon={Github}
+                      value={github}
+                      isExternal={true}
+                    />
+                  )}
                 </div>
               </div>
-            </div>
-
-            {/* Description */}
-            {description && (
-              <div className="px-8 pb-6">
-                <div className="bg-red-50/50 rounded-2xl p-4 border border-red-100/50">
-                  <p className="text-slate-700 leading-relaxed text-center">
-                    {description}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Contact Information */}
-          <div className="bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-6 mb-6">
-            <h2 className="text-xl font-bold text-red-900 mb-4 text-center">
-              联系方式
-            </h2>
-            <div className="space-y-4">
-              {email && (
-                <a
-                  href={`mailto:${email}`}
-                  className="flex items-center space-x-4 p-4 bg-white/50 rounded-2xl border border-white/50 hover:bg-white/70 transition-all duration-300 group"
-                >
-                  <div className="p-2 bg-red-100 rounded-full group-hover:bg-red-200 transition-colors">
-                    <Mail className="w-5 h-5 text-red-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-red-800">邮箱</p>
-                    <p className="text-slate-600 truncate">{email}</p>
-                  </div>
-                </a>
-              )}
-
-              {phone && (
-                <a
-                  href={`tel:${phone}`}
-                  className="flex items-center space-x-4 p-4 bg-white/50 rounded-2xl border border-white/50 hover:bg-white/70 transition-all duration-300 group"
-                >
-                  <div className="p-2 bg-red-100 rounded-full group-hover:bg-red-200 transition-colors">
-                    <Phone className="w-5 h-5 text-red-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-red-800">电话</p>
-                    <p className="text-slate-600">{phone}</p>
-                  </div>
-                </a>
-              )}
-
-              {location && (
-                <div className="flex items-center space-x-4 p-4 bg-white/50 rounded-2xl border border-white/50">
-                  <div className="p-2 bg-red-100 rounded-full">
-                    <MapPin className="w-5 h-5 text-red-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-red-800">位置</p>
-                    <p className="text-slate-600">{location}</p>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
-          {/* Skills */}
-          {skills.length > 0 && (
-            <div className="bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-6 mb-6">
-              <h2 className="text-xl font-bold text-red-900 mb-4 text-center">
-                专业技能
-              </h2>
-              <div className="flex flex-wrap gap-3 justify-center">
-                {skills.map((skill, index) => (
-                  <span
-                    key={index}
-                    className="px-4 py-2 bg-gradient-to-r from-red-100 to-red-50 text-red-700 rounded-full border border-red-200/50 font-medium text-sm"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Landscape Layout */}
+          <div className="hidden landscape:flex h-full max-w-6xl mx-auto gap-2">
+            {/* Left Panel - Profile */}
+            <div className="flex-1 flex flex-col h-full">
+              <div className="bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl rounded-2xl border border-white/50 shadow-xl overflow-hidden h-full flex flex-col justify-center">
+                {/* Profile Header */}
+                <div className="relative p-3 text-center">
+                  {/* Background pattern */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 via-transparent to-red-100/30"></div>
 
-          {/* Social Links */}
-          {(website || linkedin || github) && (
-            <div className="bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-6">
-              <h2 className="text-xl font-bold text-red-900 mb-4 text-center">
-                社交链接
-              </h2>
-              <div className="space-y-3">
-                {website && (
-                  <a
-                    href={website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center space-x-4 p-4 bg-white/50 rounded-2xl border border-white/50 hover:bg-white/70 transition-all duration-300 group"
-                  >
-                    <div className="p-2 bg-red-100 rounded-full group-hover:bg-red-200 transition-colors">
-                      <Globe className="w-5 h-5 text-red-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-red-800">网站</p>
-                      <p className="text-slate-600 text-sm truncate">
-                        {website}
-                      </p>
-                    </div>
-                  </a>
-                )}
+                  <div className="relative space-y-2">
+                    {/* Avatar */}
+                    {avatar ? (
+                      <div className="relative mx-auto w-16 h-16 rounded-full overflow-hidden ring-2 ring-white/70 shadow-lg">
+                        <img
+                          src={avatar}
+                          alt={name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            e.target.nextSibling.style.display = "flex";
+                          }}
+                        />
+                        <div
+                          className="absolute inset-0 bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-lg font-bold"
+                          style={{ display: "none" }}
+                        >
+                          {name?.charAt(0)?.toUpperCase()}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-lg font-bold ring-2 ring-white/70 shadow-lg">
+                        {name?.charAt(0)?.toUpperCase()}
+                      </div>
+                    )}
 
-                {linkedin && (
-                  <a
-                    href={linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center space-x-4 p-4 bg-white/50 rounded-2xl border border-white/50 hover:bg-white/70 transition-all duration-300 group"
-                  >
-                    <div className="p-2 bg-red-100 rounded-full group-hover:bg-red-200 transition-colors">
-                      <Linkedin className="w-5 h-5 text-red-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-red-800">
-                        LinkedIn
+                    {/* Basic Info */}
+                    <div className="space-y-1">
+                      <h1 className="text-lg font-bold text-red-900 tracking-tight">
+                        {name}
+                      </h1>
+                      <p className="text-sm text-red-700 font-medium">
+                        {title}
                       </p>
-                      <p className="text-slate-600 text-sm truncate">
-                        {linkedin}
-                      </p>
+                      <p className="text-xs text-red-600">{company}</p>
                     </div>
-                  </a>
-                )}
+                  </div>
+                </div>
 
-                {github && (
-                  <a
-                    href={github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center space-x-4 p-4 bg-white/50 rounded-2xl border border-white/50 hover:bg-white/70 transition-all duration-300 group"
-                  >
-                    <div className="p-2 bg-red-100 rounded-full group-hover:bg-red-200 transition-colors">
-                      <Github className="w-5 h-5 text-red-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-red-800">GitHub</p>
-                      <p className="text-slate-600 text-sm truncate">
-                        {github}
+                {/* Description */}
+                {description && (
+                  <div className="px-3 pb-3">
+                    <div className="bg-red-50/50 rounded-xl p-2 border border-red-100/50">
+                      <p className="text-slate-700 text-xs text-center leading-relaxed">
+                        {description}
                       </p>
                     </div>
-                  </a>
+                  </div>
                 )}
               </div>
             </div>
-          )}
+
+            {/* Right Panel - Details */}
+            <div className="flex-1 flex flex-col h-full">
+              <div className="grid grid-cols-1 gap-2 h-full justify-items-stretch content-stretch">
+                {/* Contact Information */}
+                <div className="bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl rounded-2xl border border-white/50 shadow-xl p-3">
+                  <div className="space-y-1">
+                    {email && (
+                      <ContactItem
+                        href={`mailto:${email}`}
+                        icon={Mail}
+                        value={email}
+                      />
+                    )}
+
+                    {phone && (
+                      <ContactItem
+                        href={`tel:${phone}`}
+                        icon={Phone}
+                        value={phone}
+                      />
+                    )}
+
+                    {location && (
+                      <ContactItem
+                        icon={MapPin}
+                        value={location}
+                      />
+                    )}
+
+                    {website && (
+                      <ContactItem
+                        href={website}
+                        icon={Globe}
+                        value={website}
+                        isExternal={true}
+                      />
+                    )}
+
+                    {linkedin && (
+                      <ContactItem
+                        href={linkedin}
+                        icon={Linkedin}
+                        value={linkedin}
+                        isExternal={true}
+                      />
+                    )}
+
+                    {github && (
+                      <ContactItem
+                        href={github}
+                        icon={Github}
+                        value={github}
+                        isExternal={true}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Skills */}
+                {skills.length > 0 && (
+                  <div className="bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl rounded-2xl border border-white/50 shadow-xl p-2">
+                    <h2 className="text-sm font-bold text-red-900 mb-1 text-center">
+                      Professional Skills
+                    </h2>
+                    <div className="flex flex-wrap gap-1 justify-center">
+                      {skills.map((skill, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-gradient-to-r from-red-100 to-red-50 text-red-700 rounded-full border border-red-200/50 font-medium text-xs"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </main>
+      {/* 分享弹窗 */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        shareUrl={window.location.href}
+        cardName={card?.name || ""}
+      />
     </div>
   );
 }
