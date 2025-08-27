@@ -47,25 +47,46 @@ function ShareModal({ isOpen, onClose, shareUrl, cardName }) {
   };
 
   const handleDownloadQR = () => {
-    const svg = document.querySelector('.share-modal svg');
+    // 更精确地选择二维码SVG元素
+    const qrContainer = document.querySelector('.share-modal .bg-white.rounded-2xl');
+    const svg = qrContainer ? qrContainer.querySelector('svg') : null;
+    
     if (svg) {
       const svgData = new XMLSerializer().serializeToString(svg);
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const img = new Image();
       
+      // 设置画布尺寸与二维码相同
       canvas.width = 200;
       canvas.height = 200;
       
       img.onload = () => {
-        ctx.drawImage(img, 0, 0);
+        // 设置白色背景
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // 绘制二维码
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        // 创建下载链接
         const link = document.createElement('a');
         link.download = `${cardName}-qrcode.png`;
         link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
       };
       
-      img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+      img.onerror = () => {
+        console.error('Failed to load QR code image');
+        alert('Failed to download QR code. Please try again.');
+      };
+      
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    } else {
+      console.error('QR code not found');
+      alert('QR code not found. Please try again.');
     }
   };
 
